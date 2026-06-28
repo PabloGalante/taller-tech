@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tallertech</groupId>
-    <artifactId>tallertech</artifactId>
+    <artifactId>tallertech-tp4</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -17,7 +17,6 @@
     </properties>
 
     <dependencies>
-        <!-- MySQL JDBC Driver -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -27,7 +26,6 @@
 
     <build>
         <plugins>
-            <!-- Genera un JAR ejecutable con todas las dependencias -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
