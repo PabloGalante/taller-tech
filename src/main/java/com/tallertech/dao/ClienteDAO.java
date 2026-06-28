@@ -5,24 +5,29 @@ import com.tallertech.model.Cliente;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
-public class ClienteDAO {
+/**
+ * Implementa IDao<Cliente> con operaciones CRUD sobre la tabla cliente.
+ * Usa PreparedStatement para prevenir inyección SQL.
+ */
+public class ClienteDAO implements IDao<Cliente> {
 
-    public List<Cliente> listarTodos() throws SQLException {
-        List<Cliente> lista = new ArrayList<>();
-        String sql = "SELECT id, nombre, apellido, telefono, email FROM cliente ORDER BY apellido, nombre";
+    @Override
+    public ArrayList<Cliente> listarTodos() throws SQLException {
+        ArrayList<Cliente> lista = new ArrayList<>();
+        String sql = "SELECT id, nombre, apellido, telefono, email " +
+                     "FROM cliente ORDER BY apellido, nombre";
         try (Statement st = DBConnection.get().createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                lista.add(mapRow(rs));
-            }
+            while (rs.next()) lista.add(mapRow(rs));
         }
         return lista;
     }
 
+    @Override
     public Cliente buscarPorId(int id) throws SQLException {
-        String sql = "SELECT id, nombre, apellido, telefono, email FROM cliente WHERE id = ?";
+        String sql = "SELECT id, nombre, apellido, telefono, email " +
+                     "FROM cliente WHERE id = ?";
         try (PreparedStatement ps = DBConnection.get().prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -31,9 +36,12 @@ public class ClienteDAO {
         }
     }
 
+    @Override
     public void insertar(Cliente c) throws SQLException {
-        String sql = "INSERT INTO cliente (nombre, apellido, telefono, email) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = DBConnection.get().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO cliente (nombre, apellido, telefono, email) " +
+                     "VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = DBConnection.get()
+                .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, c.getNombre());
             ps.setString(2, c.getApellido());
             ps.setString(3, c.getTelefono());
@@ -46,7 +54,8 @@ public class ClienteDAO {
     }
 
     public void actualizar(Cliente c) throws SQLException {
-        String sql = "UPDATE cliente SET nombre=?, apellido=?, telefono=?, email=? WHERE id=?";
+        String sql = "UPDATE cliente SET nombre=?, apellido=?, " +
+                     "telefono=?, email=? WHERE id=?";
         try (PreparedStatement ps = DBConnection.get().prepareStatement(sql)) {
             ps.setString(1, c.getNombre());
             ps.setString(2, c.getApellido());
@@ -57,6 +66,7 @@ public class ClienteDAO {
         }
     }
 
+    @Override
     public void eliminar(int id) throws SQLException {
         String sql = "DELETE FROM cliente WHERE id = ?";
         try (PreparedStatement ps = DBConnection.get().prepareStatement(sql)) {
